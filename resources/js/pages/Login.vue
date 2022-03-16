@@ -12,7 +12,6 @@
                     <div class="card-body">
                     <FormKit
                         type="form"
-                        submit-label="Login"
                         :actions="false"
                     >
                         <FormKit
