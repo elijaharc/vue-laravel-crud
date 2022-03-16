@@ -1,4 +1,8 @@
 const mix = require('laravel-mix');
+var webpack = require('webpack');
+mix.webpackConfig({
+    plugins: [new webpack.EnvironmentPlugin(['APP_URL'])],
+})
 
 /*
  |--------------------------------------------------------------------------
@@ -12,6 +16,5 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-    .postCss('resources/css/app.css', 'public/css', [
-        //
-    ]);
+    .vue()
+    .css('resources/css/app.css', 'public/css');
