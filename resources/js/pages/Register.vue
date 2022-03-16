@@ -36,7 +36,7 @@
                             validation-label="Password confirmation"
                             v-model="password_confirm"
                         />
-                        <button class="btn btn-primary" type="submit" @click="handleSubmit">Login</button>
+                        <button class="btn btn-primary" type="submit" @click="handleSubmit">Register</button>
                     </FormKit>
                     </div>
                 </div>
