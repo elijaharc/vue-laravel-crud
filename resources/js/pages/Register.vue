@@ -10,7 +10,7 @@
                 <div class="card card-default mt-5">
                     <div class="card-header">Register</div>
                     <div class="card-body">
-                        <FormKit type="group" :actions="false">
+                        <FormKit type="form" :actions="false">
                             <FormKit
                                 type="text"
                                 label="Username"
