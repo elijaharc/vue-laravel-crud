@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
+use App\Models\Task;
+use App\Models\UserTasks;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class TaskController extends Controller
 {
@@ -12,9 +14,12 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($userId)
     {
-        //
+        $userTaskIds = UserTasks::where('user_id', $userId)->pluck('task_id');
+        $userTasks = Task::whereIn('id', $userTaskIds)->get();
+
+        return response()->json($userTasks);
     }
 
     /**
@@ -34,8 +39,18 @@ class TaskController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //
+    {   
+        $task = new Task();
+        $task->task_name = $request->taskName;
+
+        if($task->save()) {
+            $userTask = new UserTasks();
+            $userTask->user_id = $request->userId;
+            $userTask->task_id = $task->id;
+            $userTask->save();
+
+            return response()->json(['success' => true, 'message' => 'Task added successfully']);
+        }
     }
 
     /**
@@ -52,24 +67,25 @@ class TaskController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int  $taskId
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        //
+    public function edit($taskId)
+    {   
+        $task = Task::find($taskId);
+        return response()->json($task);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+    public function update(Request $request)
+    {   
+        Task::where('id', $request->id)->update(['task_name' => $request->task_name]);
+        return response()->json(['success' => true, 'message' => 'Task updated successfully']);
     }
 
     /**
@@ -78,8 +94,10 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($taskId)
     {
-        //
+        $task = Task::findOrFail($taskId);
+        $task->delete();
+        return response()->json(['success' => true, 'message' => 'Task deleted successfully']);
     }
 }
