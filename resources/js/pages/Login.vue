@@ -7,7 +7,7 @@
                     {{ error }}
                 </div>
 
-                <div class="card card-default">
+                <div class="card card-default mt-5">
                     <div class="card-header">Login</div>
                     <div class="card-body">
                     <FormKit

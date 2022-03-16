@@ -7,37 +7,44 @@
                     {{ error }}
                 </div>
 
-                <div class="card card-default">
+                <div class="card card-default mt-5">
                     <div class="card-header">Register</div>
                     <div class="card-body">
-                    <FormKit type="group" :actions="false">
-                        <FormKit
-                            type="email"
-                            label="Email address"
-                            validation="required|email"
-                            help="Enter your email address"
-                            v-model="email"
-                        />
-                        <FormKit
-                            type="password"
-                            name="password"
-                            value="super-secret"
-                            label="Password"
-                            help="Enter your password"
-                            validation="required"
-                            v-model="password"
-                        />
-                        <FormKit
-                            type="password"
-                            name="password_confirm"
-                            label="Confirm password"
-                            help="Confirm your password"
-                            validation="required|confirm"
-                            validation-label="Password confirmation"
-                            v-model="password_confirm"
-                        />
-                        <button class="btn btn-primary" type="submit" @click="handleSubmit">Register</button>
-                    </FormKit>
+                        <FormKit type="group" :actions="false">
+                            <FormKit
+                                type="text"
+                                label="Username"
+                                validation="required"
+                                help="Enter your username"
+                                v-model="username"
+                            />
+                            <FormKit
+                                type="email"
+                                label="Email address"
+                                validation="required|email"
+                                help="Enter your email address"
+                                v-model="email"
+                            />
+                            <FormKit
+                                type="password"
+                                name="password"
+                                value="super-secret"
+                                label="Password"
+                                help="Enter your password"
+                                validation="required"
+                                v-model="password"
+                            />
+                            <FormKit
+                                type="password"
+                                name="password_confirm"
+                                label="Confirm password"
+                                help="Confirm your password"
+                                validation="required|confirm"
+                                validation-label="Password confirmation"
+                                v-model="password_confirm"
+                            />
+                            <button class="btn btn-primary" type="submit" @click="handleSubmit">Register</button>
+                        </FormKit>
                     </div>
                 </div>
             </div>
@@ -50,6 +57,7 @@ import UserService from '../services/user.service';
 export default {
     data() {
         return {
+            username: "",
             email: "",
             password: "",
             password_confirm: "",
@@ -60,14 +68,20 @@ export default {
     methods: {
         handleSubmit(e) {
             e.preventDefault();
+
             let user = {
+                username: this.username,
                 email: this.email,
                 password: this.password,
                 password_confirm: this.password_confirm
             }
-            let validEmail = this.validateEmail(this.email)
-            let passwordMatch = this.password === this.password_confirm
-            if(this.email.length == 0 || this.password.length == 0 || this.password_confirm.length == 0) {
+
+            let validEmail = this.validateEmail(this.email);
+            let passwordMatch = this.password === this.password_confirm;
+            let isBlank = this.username.length == 0 || this.email.length == 0 || this.password.length == 0 || this.password_confirm.length == 0;
+
+            // Custom validation logic:
+            if(isBlank) {
                 this.error = "All fields required."
             } else if (!validEmail) {
                 this.error = "Please enter a valid email address."   
@@ -76,7 +90,6 @@ export default {
             } else {
                 UserService.registerUser(user)
                     .then(response => {
-                        console.log("response", response)
                         if (response.data.success) {
                             UserService.loginUser(user)
                             .then(response => {
@@ -84,7 +97,9 @@ export default {
                                     this.$router.push('/dashboard')
                                 }
                             })
-                        } else if (response.data.message.includes("Duplicate entry")){
+                        } else if (response.data.message.includes("users.users_username_unique")){
+                            this.error = "Username already taken."
+                        } else if (response.data.message.includes("users.users_email_unique")){
                             this.error = "Email already registered."
                         } else {
                             console.log("Error:", response.data.message)
@@ -108,9 +123,6 @@ export default {
             return next('dashboard');
         }
         next();
-    },
-    mounted() {
-        console.log("this.error", this.error)
     },
 }
 </script>
