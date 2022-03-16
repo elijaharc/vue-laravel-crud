@@ -37,12 +37,12 @@ export const routes = [
     },
     {
         name: 'addtask',
-        path: '/tasks/add',
+        path: '/task/add',
         component: AddTask
     },
     {
         name: 'editask',
-        path: '/tasks/edit/:id',
+        path: '/task/edit/:id',
         component: EditTask
     },
 ];
