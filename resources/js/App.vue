@@ -1,13 +1,14 @@
 <template>
     <div class="container">
         <div class="text-center" style="margin: 20px 0px 20px 0px;">
-            <h2 class="text-secondary">TaskApp</h2>
+            <h2 class="app-name">TaskApp</h2>
         </div>
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="collapse navbar-collapse">
                 <!-- for logged in user-->
                 <div class="navbar-nav" v-if="isLoggedIn">
+                    <router-link to="/" class="nav-item nav-link">Home</router-link>
                     <router-link to="/tasks" class="nav-item nav-link">Tasks</router-link>
                     <a class="nav-item nav-link" style="cursor: pointer" @click="logout">Logout</a>
                 </div>
