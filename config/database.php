@@ -1,7 +1,12 @@
 <?php
 
 use Illuminate\Support\Str;
-$DATABASE_URL=parse_url('postgres://uwjasckfdpeise:e34f481070eb471bba3299e524714f6df578d37fb689848f72fa6069abe35859@ec2-52-44-209-165.compute-1.amazonaws.com:5432/dflndo32h86nob');
+
+$url = parse_url(getenv("postgres://uwjasckfdpeise:e34f481070eb471bba3299e524714f6df578d37fb689848f72fa6069abe35859@ec2-52-44-209-165.compute-1.amazonaws.com:5432/dflndo32h86nob"));
+$host = $url["host"];
+$username = $url["user"];
+$password = $url["pass"];
+$database = substr($url["path"], 1);
 
 return [
 
@@ -16,7 +21,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'pgsql'),
+    'default' => 'pgsql',
 
     /*
     |--------------------------------------------------------------------------
@@ -64,19 +69,16 @@ return [
             ]) : [],
         ],
 
-        'pgsql' => [
-            'driver' => 'pgsql',
-            'host' => $DATABASE_URL["DB_HOST"],
-            'port' => $DATABASE_URL["DB_PORT"],
-            'database' => ltrim($DATABASE_URL["path"], "/"),
-            'username' => $DATABASE_URL["DB_USER"],
-            'password' => $DATABASE_URL["DB_PASSWORD"],
-            'charset' => 'utf8',
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'search_path' => 'public',
-            'sslmode' => 'prefer',
-        ],
+        'pgsql' => array(
+            'driver'   => 'pgsql',
+            'host'     => $host,
+            'database' => $database,
+            'username' => $username,
+            'password' => $password,
+            'charset'  => 'utf8',
+            'prefix'   => '',
+            'schema'   => 'public',
+        ),
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
